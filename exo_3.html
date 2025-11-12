@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Effectif des classes</title>
+<style>
+  body {
+    font-family: "Times New Roman", serif;
+    margin: 50px;
+  }
+  h1 {
+    text-align: left;
+    font-weight: bold;
+  }
+  .ligne {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+  }
+  .classe {
+    width: 80px;
+    text-align: right;
+    margin-right: 10px;
+  }
+  .barre {
+    height: 20px;
+    color: white;
+    text-align: right;
+    line-height: 20px;
+    font-size: 14px;
+    padding-right: 5px;
+  }
+  p {
+    margin: 5px 0;
+  }
+</style>
+</head>
+<body>
+
+<script>
+  // --- Données ---
+  var classes = [
+    ["CI-1", 30],
+    ["CI-2", 25],
+    ["CI-3", 24],
+    ["LST DA", 80],
+    ["LST IDAI", 90],
+    ["MST IASD", 40],
+    ["MST SIBD", 35]
+  ];
+
+  // --- Calcul total et moyenne ---
+  var total = 0;
+  for (var i = 0; i < classes.length; i++) total += classes[i][1];
+  var moyenne = total / classes.length;
+
+  // --- Titre ---
+  document.write("<h1>Effectif des classes</h1>");
+
+  // --- Création des barres ---
+  for (var i = 0; i < classes.length; i++) {
+    var nom = classes[i][0];
+    var eff = classes[i][1];
+    var pourc = Math.round((eff / total) * 100);
+    var couleur = eff > moyenne ? "red" : "blue";
+    var largeur = pourc * 6; // facteur de proportion
+
+    document.write("<div class='ligne'>");
+    document.write("<div class='classe'>" + nom + "</div>");
+    document.write("<div class='barre' style='background-color:" + couleur + "; width:" + largeur + "px;'>" + pourc + "%</div>");
+    document.write("</div>");
+  }
+
+  // --- Affichage total et moyenne ---
+  document.write("<br>");
+  document.write("<p>Nombre total: <b>" + total + "</b></p>");
+  document.write("<p>Nombre moyen: <b>" + Math.round(moyenne) + "</b></p>");
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouvelle fenêtre</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 20px;
+    }
+    h2 {
+      font-size: 20px;
+    }
+    hr {
+      margin: 12px 0;
+    }
+    button {
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Cliquez sur ce bouton pour ouvrir une nouvelle fenêtre:</h2>
+  <button onclick="ouvrirNouvelleFenetre()">Nouvelle fenêtre</button>
+
+  <hr>
+
+  <button onclick="pagePrecedente()">Page précédente</button>
+
+  <h2>Paramètres du navigateur:</h2>
+  <p>//Afficher les paramètres du navigateur sur la page courante
+    <button onclick="window.print()">Imprimer</button>
+  </p>
+
+  <script>
+    function ouvrirNouvelleFenetre() {
+      // ouvre une nouvelle fenêtre (ou onglet selon le navigateur)
+      window.open("about:blank", "_blank", "width=600,height=400");
+    }
+
+    function pagePrecedente() {
+      // retourne à la page précédente
+      window.history.back();
+    }
+  </script>
+
+</body>
+</html>

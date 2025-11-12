@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reproduction de page</title>
+  <style>
+    :root{
+      --page-width: 720px;
+      --accent-cyan: #00e6f0;
+      --box-border: #000;
+      --muted: #666;
+    }
+
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 24px;
+      color: #111;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page{
+      width: 100%;
+      max-width: var(--page-width);
+    }
+
+    .top-note{
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #222;
+    }
+
+    .toggle-btn{
+      vertical-align: middle;
+      margin-left: 8px;
+      padding: 4px 8px;
+      border: 1px solid #cfcfcf;
+      background: #f8f8f8;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Encadré du formulaire */
+    .form-frame{
+      border: 3px solid var(--box-border);
+      padding: 14px;
+      width: 520px;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 8px 0 20px 0;
+      background: #fff;
+    }
+
+    .form-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    label{
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    select, input[type="text"]{
+      padding:6px;
+      border:1px solid #ccc;
+      border-radius:4px;
+      min-width: 140px;
+    }
+
+    .small-btn{
+      padding:4px 8px;
+      border-radius:4px;
+      border:1px solid #999;
+      background:#fafafa;
+      cursor:pointer;
+    }
+
+    .muted{
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .center-text{
+      text-align:center;
+      margin: 8px 0 16px 0;
+      color:#333;
+    }
+
+    /* Bandeau cyan */
+    .cyan-banner{
+      display:inline-block;
+      background: var(--accent-cyan);
+      padding: 10px 14px;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.05;
+      border-radius: 2px;
+    }
+
+    /* petit style mobile (pour ressembler à ta capture longue) */
+    @media (max-width:520px){
+      .form-frame{ width: 100%; padding:10px; }
+      .cyan-banner{ font-size:18px; padding:8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top-note">
+      Cliquez sur le bouton pour cacher/rendre visible le formulaire en bas:
+      <button id="toggleFormBtn" class="toggle-btn">Cacher</button>
+    </div>
+
+    <!-- Encadré du formulaire (visuel) -->
+    <div id="formFrame" class="form-frame" aria-live="polite">
+      <div style="margin-bottom:8px;">
+        <label for="groupSelect">Faire un choix:</label>
+      </div>
+
+      <div class="form-row">
+        <select id="groupSelect" aria-label="Choix de groupe">
+          <option>Groupe1</option>
+          <option>Groupe2</option>
+          <option>Groupe3</option>
+        </select>
+
+        <button id="addBtn" class="small-btn" title="Ajouter">Add new</button>
+
+        <span style="margin-left:12px; font-weight:600;">ajouter l'option suivante :</span>
+      </div>
+
+      <div class="form-row" style="margin-top:6px;">
+        <input id="optionInput" type="text" placeholder="N° de l'option" />
+        <button id="clearBtn" class="small-btn">Clear</button>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label>Choix du groupe</label>
+        <input id="chosenGroup" class="muted" type="text" value="Aucune option choisie." readonly style="width:300px; margin-left:8px;" />
+      </div>
+    </div>
+
+    <div class="center-text">Le formulaire est visible.</div>
+
+    <div style="text-align:left; margin-top:20px;">
+      <div class="cyan-banner">Paramètres du navigateur ( Par double clic):</div>
+    </div>
+  </div>
+
+  <script>
+    // Comportement minimal : afficher/masquer le cadre, ajouter option, clear, montrer le groupe choisi
+    const toggleBtn = document.getElementById('toggleFormBtn');
+    const formFrame = document.getElementById('formFrame');
+    const addBtn = document.getElementById('addBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const optionInput = document.getElementById('optionInput');
+    const groupSelect = document.getElementById('groupSelect');
+    const chosenGroup = document.getElementById('chosenGroup');
+
+    toggleBtn.addEventListener('click', () => {
+      const hidden = formFrame.style.display === 'none';
+      formFrame.style.display = hidden ? '' : 'none';
+      toggleBtn.textContent = hidden ? 'Cacher' : 'Afficher';
+      // Mettre à jour le texte central
+      document.querySelector('.center-text').textContent = hidden ? 'Le formulaire est visible.' : 'Le formulaire est caché.';
+    });
+
+    // Ajouter une nouvelle option au select
+    addBtn.addEventListener('click', () => {
+      const val = optionInput.value.trim();
+      if(!val){
+        optionInput.focus();
+        return;
+      }
+      const opt = document.createElement('option');
+      opt.textContent = val;
+      groupSelect.appendChild(opt);
+      groupSelect.value = val;
+      chosenGroup.value = val;
+      optionInput.value = '';
+    });
+
+    // Clear input
+    clearBtn.addEventListener('click', () => {
+      optionInput.value = '';
+      optionInput.focus();
+    });
+
+    // Mettre à jour le champ "Choix du groupe" quand select change
+    groupSelect.addEventListener('change', () => {
+      chosenGroup.value = groupSelect.value;
+    });
+
+    // Double-clic sur la bannière cyan : exemple d'action (ici on affiche une alerte discrète)
+    const banner = document.querySelector('.cyan-banner');
+    banner.addEventListener('dblclick', () => {
+      // action de démonstration (remplace par ce que tu veux)
+      alert('Double-clic détecté : paramètres du navigateur (démo).');
+    });
+  </script>
+</body>
+</html>

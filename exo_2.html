@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Gestion d'une liste</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 40px;
+    }
+    table {
+        margin: 20px auto;
+        border-collapse: collapse;
+        width: 50%;
+    }
+    th, td {
+        padding: 8px 12px;
+        border: none;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    button {
+        margin-left: 5px;
+    }
+    input[type="text"], input[type="number"] {
+        padding: 4px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Gestion d'une liste</h1>
+
+<div>
+    <label for="indice">Indice d'insertion (0:début et -1:fin)</label>
+    <input type="number" id="indice" placeholder="N° de ligne.">
+    <button onclick="ajouterElement()">Ajouter</button>
+</div>
+
+<table id="liste">
+    <tbody>
+        <tr><td>Element 1</td><td><button onclick="modifier(this)">Modifier</button><button onclick="supprimer(this)">Supprimer</button></td></tr>
+        <tr><td>Element 2</td><td><button onclick="modifier(this)">Modifier</button><button onclick="supprimer(this)">Supprimer</button></td></tr>
+        <tr><td>Element 3</td><td><button onclick="modifier(this)">Modifier</button><button onclick="supprimer(this)">Supprimer</button></td></tr>
+    </tbody>
+</table>
+
+<script>
+function ajouterElement() {
+    let indice = parseInt(document.getElementById("indice").value);
+    let table = document.getElementById("liste").getElementsByTagName("tbody")[0];
+
+    let texte = prompt("Nom du nouvel élément :");
+    if (!texte) return;
+
+    let newRow = table.insertRow(indice === 0 ? 0 : (indice === -1 || indice >= table.rows.length ? table.rows.length : indice));
+    let cell1 = newRow.insertCell(0);
+    let cell2 = newRow.insertCell(1);
+    cell1.textContent = texte;
+    cell2.innerHTML = '<button onclick="modifier(this)">Modifier</button> <button onclick="supprimer(this)">Supprimer</button>';
+}
+
+function modifier(btn) {
+    let ligne = btn.parentNode.parentNode;
+    let ancienTexte = ligne.cells[0].textContent;
+    let nouveauTexte = prompt("Modifier le nom :", ancienTexte);
+    if (nouveauTexte !== null && nouveauTexte.trim() !== "") {
+        ligne.cells[0].textContent = nouveauTexte;
+    }
+}
+
+function supprimer(btn) {
+    let ligne = btn.parentNode.parentNode;
+    ligne.parentNode.removeChild(ligne);
+}
+</script>
+
+</body>
+</html>
