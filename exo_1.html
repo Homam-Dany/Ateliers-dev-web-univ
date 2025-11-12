@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<LINK rel=stylesheet href="exo_1.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Système de Réservation - Département Informatique</title>
+</head>
+<body>
+<header>
+<a name="HautDePage"></a>
+<h1>Réservation de Ressources Informatiques</h1>
+<nav>
+<ul>
+<li><a href="#reservation">Nouvelle réservation</a></li>
+<li><a href="#reservations-existantes">Réservations en cours</a></li>
+<li><a href="#informations">Informations</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<section id="reservation">
+<h2>Formulaire de Réservation <a href="#HautDePage">(..↑..)</a></h2>
+<form action="/reserver" method="post">
+<fieldset>
+<legend>Type de ressource</legend>
+<label for="type_ressource">Sélectionnez le type de ressource :</label>
+<select id="type_ressource" name="type_ressource" required >
+<option value="">-- Choisissez une option --</option>
+<option value="serveur">Serveur</option>
+<option value="station">Station de travail</option>
+<option value="reseau">Équipement réseau</option>
+</select>
+</fieldset>
+<fieldset>
+<legend>Période de réservation</legend>
+<p>
+<label for="date-debut">Date de début :</label>
+<input type="date" id="date-debut" name="date_debut" required>
+</p>
+<p>
+<label for="date-fin">Date de fin :</label>
+<input type="date" id="date-fin" name="date_fin" required>
+</p>
+<p>
+<label for="heure-debut">Heure de début :</label>
+<input type="time" id="heure-debut" name="heure_debut" value="09:00"
+required>
+</p>
+<p>
+<label for="heure-fin">Heure de fin :</label>
+<input type="time" id="heure-fin" name="heure_fin" value="17:00"
+required>
+</p>
+</fieldset>
+<fieldset id="configuration-serveur">
+<legend>Configuration serveur</legend>
+<p>
+<label for="cpu">Processeurs :</label>
+<input type="range" id="cpu" name="cpu" min="1" max="32" value="8"
+step="1"
+oninput="valeurCpu.value = this.value + ' cœurs'">
+<output id="valeurCpu">8 cœurs</output>
+</p>
+<p>
+<label for="ram">Mémoire RAM :</label>
+<input type="number" id="ram" name="ram" min="4" max="256" value="16">
+<span>Go</span>
+</p>
+<p>
+<label for="stockage">Stockage :</label>
+<input type="number" id="stockage" name="stockage" min="50" max="2000"
+value="200">
+<span>Go</span>
+</p>
+<section>
+<p>Système d'exploitation :</p>
+<p>
+<input type="radio" id="os-linux" name="os" value="linux" checked>
+<label for="os-linux">Linux</label>
+</p>
+<p>
+<input type="radio" id="os-windows" name="os" value="windows">
+<label for="os-windows">Windows Server</label>
+</p>
+</section>
+</fieldset>
+<fieldset>
+<legend>Informations utilisateur</legend>
+<p>
+<label for="nom">Nom :</label>
+<input type="text" id="nom" name="nom" required>
+</p>
+<p>
+<label for="prenom">Prénom :</label>
+<input type="text" id="prenom" name="prenom" required>
+</p>
+<p>
+<label for="email">Email :</label>
+<input type="email" id="email" name="email" required>
+</p>
+<p>
+<label for="projet">Projet/Usage :</label>
+<textarea id="projet" name="projet" rows="4" cols="50"
+placeholder="Décrivez brièvement l'usage prévu de la
+ressource..."
+required></textarea>
+</p>
+</fieldset>
+<fieldset>
+<legend>Options supplémentaires</legend>
+<p>
+<input type="checkbox" id="sauvegarde" name="sauvegarde">
+<label for="sauvegarde">Sauvegarde automatique quotidienne</label>
+</p>
+<p>
+<input type="checkbox" id="monitoring" name="monitoring" checked>
+<label for="monitoring">Monitoring des performances</label>
+</p>
+<p>
+<input type="checkbox" id="assistance" name="assistance">
+<label for="assistance">Assistance technique prioritaire</label>
+</p>
+</fieldset>
+<p>
+<button type="submit">Soumettre la réservation</button>
+<button type="reset">Réinitialiser le formulaire</button>
+</p>
+</form>
+</section>
+<section id="reservations-existantes">
+<h2>Réservations en cours <a href="#HautDePage">(..↑..)</a></h2>
+<table border="1">
+<caption>Planning des réservations de ressources informatiques</caption>
+<colgroup>
+<col span="1" style="width: 15%">
+<col span="1" style="width: 20%">
+<col span="1" style="width: 15%">
+<col span="1" style="width: 15%">
+<col span="1" style="width: 20%">
+<col span="1" style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" rowspan="2">Ressource</th>
+<th scope="col" rowspan="2">Utilisateur</th>
+<th scope="col" colspan="2">Période</th>
+<th scope="col" rowspan="2">Configuration</th>
+<th scope="col" rowspan="2">Statut</th>
+</tr>
+<tr>
+    <th scope="col">Début</th>
+<th scope="col">Fin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2">Serveur #S-42</td>
+<td>Al-Mansour Ahmed</td>
+<td>2025-11-15</td>
+<td>2025-11-20</td>
+<td>16 CPU / 64Go RAM</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Benali Fatima</td>
+<td>2025-11-21</td>
+<td>2025-11-25</td>
+<td>8 CPU / 32Go RAM</td>
+<td>Planifiée</td>
+</tr>
+<tr>
+<td>Station #W-17</td>
+<td>Khalil Mohammed</td>
+<td>2025-11-16</td>
+<td>2025-11-18</td>
+<td>i7 / 32GB / SSD 512GB</td>
+<td>En attente</td>
+</tr>
+<tr>
+<td>Switch #N-08</td>
+<td>Jaber Aisha</td>
+<td>2025-11-14</td>
+<td>2025-11-22</td>
+<td>48 ports Gigabit</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Serveur #S-15</td>
+<td>Rashid Omar</td>
+<td>2025-11-19</td>
+<td>2025-11-26</td>
+<td>12 CPU / 48Go RAM</td>
+<td>Confirmée</td>
+</tr>
+<tr>
+<td>Station #W-09</td>
+<td>Al-Zahra Leila</td>
+<td>2025-11-17</td>
+<td>2025-11-24</td>
+<td>i9 / 64GB / SSD 1TB</td>
+<td>Active</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="4">Total ressources réservées</td>
+<td colspan="2">6 réservations actives</td>
+</tr>
+</tfoot>
+</table>
+</section>
+<aside id="informations">
+<h2>Informations importantes <a href="#HautDePage">(..↑..)</a></h2>
+<details>
+<summary>Politique de réservation</summary>
+<ul>
+<li>Les réservations doivent être faites au moins 24h à l'avance</li>
+<li>Durée maximale : 14 jours</li>
+<li>Annulation possible jusqu'à 6h avant le début</li>
+</ul>
+</details>
+<details>
+<summary>Configuration par défaut</summary>
+<ul>
+<li>Serveurs : 4 CPU, 16GB RAM, 200GB stockage</li>
+<li>Stations : Intel i7, 32GB RAM, SSD 512GB</li>
+<li>Équipements réseau : configuration standard</li>
+</ul>
+</details>
+<article>
+<h3>Maintenance planifiée</h3>
+<p>Date : dimanche 23 novembre 2025</p>
+<p>Impact : Indisponibilité de 2h entre 02:00 et 04:00</p>
+</article>
+</aside>
+</main>
+<footer>
+<address id="contact">
+<h3>Contact</h3>
+<p>Département Informatique - Université</p>
+
+<p>Email: <a href="mailto:reservation-info@fstt.uae.ma">reservation-
+info@fstt.uae.ma</a></p>
+
+<p>Téléphone: <a href="tel:+2120666123456">+212(0)666123456</a></p>
+<p>Bâtiment E, Bureau E20</p>
+</address>
+<p>&copy; 2025 Département Informatique. Tous droits réservés.</p>
+</footer>
+</body>
+</html>
