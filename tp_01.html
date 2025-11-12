@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin : 0 ;
+            padding : 0;
+            /* Correction: box-sizing doit être avec un tiret */
+            box-sizing : border-box; 
+            font-family:"Quicksand", sans-serif;
+        }
+        body {
+        display: flex;    
+        justify-content: center;
+        /* Correction: align-items doit être sur l'axe Y et non 100vh */
+        align-items: center; 
+        height: 100vh; /* Ajouté la hauteur pour centrer verticalement */
+        background: #111;
+        width: 100%;
+        overflow: hidden;
+        }   
+        .ring {
+        position: relative;
+        width: 500px;
+        height: 500px;
+        display: flex;
+        justify-content: center ;
+        align-items: center;
+        }
+        .ring i {
+         position: absolute;
+         inset: 0;
+         border: 2px solid #fff;
+         transition: 0.5s;
+        }
+        .ring i:nth-child(1)
+        {
+            border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+            animation: animate 6s linear infinite;
+        }
+        .ring i:nth-child(2){
+            border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+            animation: animate 4s linear infinite;
+        }
+         .ring i:nth-child(3){
+            border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+            animation: animate2 10s linear infinite;
+        }
+        .ring:hover i{
+            border: 6px solid var(--clr);
+            filter: drop-shadow(0 0 20px var(--clr));
+
+        }
+        @keyframes animate{
+        0%{
+            transform: rotate(0deg);
+        }
+        100%{
+            transform: rotate(360deg);
+        }
+        }
+        @keyframes animate2{
+        0%{
+            transform: rotate(360deg);
+        }
+        100%{
+            transform: rotate(0deg);
+        }
+        }
+        .login{
+            position:absolute;
+            width: 300px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .login h2{
+            font-size: 2em;
+            color: #fff;
+        }
+        .inputBx{
+            position: relative;
+            width: 100%;
+        }
+        .inputBx input{
+            position: relative;
+            width: 100%;
+            padding: 12px 20px;
+            background: transparent;
+            border: 2px solid #fff;
+            border-radius: 40px;
+            font-size: 1.2em;
+            color:#fff;
+            box-shadow: none;
+            outline: none;
+        }
+        .inputBx input[type="submit"]{
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            border-radius: 40px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #ff00cc , #3333ff);
+            background-size: 200% 200%;
+            transition: background-position 1s ease;
+        }
+        .inputBx input[type="submit"]:hover{
+            background-position:right center;
+        }
+        .inputBx input::placeholder{
+            color:rgba(255 , 255 , 255 , 0.75);
+        }
+        
+        /* NOUVEAU CODE CSS pour les liens */
+        .links{
+            position: relative;
+            width: 100%;
+            display: flex;
+            /* Place "Forget Password" à gauche et "Signup" à droite */
+            justify-content: space-between; 
+            align-items: center;
+            padding: 0 20px;
+            margin-top: 15px; /* Espace au-dessus des liens */
+        }
+        .links a{
+            color: #c9c9c9; /* Couleur gris clair */
+            text-decoration: none; /* Pas de soulignement */
+            font-size: 0.9em; /* Taille de police plus petite */
+            transition: 0.3s;
+        }
+        .links a:hover {
+            color: #fff; /* Blanc au survol */
+        }
+    </style>
+</head>
+<body>
+    <div class="ring">
+        <i style="--clr:#ff00cc"></i>
+        <i style="--clr:#00ffff"></i>
+        <i style="--clr:#ffcc00"></i>
+        <div class="login">
+            <h2>Login</h2>
+            <div class="inputBx">
+                <input type="text" placeholder="Username">
+            </div>
+            <div class="inputBx">
+                <input type="password"  placeholder="Password">
+            </div>
+            <div class="inputBx">
+                <input type="submit"  value="Sign in">
+            </div>
+            <div class="links">
+                <a href="#">Forget Password</a>
+                <a href="#">Signup</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
