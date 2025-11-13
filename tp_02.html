@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu du Serpent</title>
+    <!-- Chargement de Tailwind CSS pour un style moderne et responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Styles personnalisés pour le jeu */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* Arrière-plan sombre */
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        canvas {
+            background-color: #222; /* Arrière-plan du plateau de jeu */
+            border: 4px solid #4ade80; /* Bordure verte du plateau */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+            /* Important pour gérer les swipes sur les appareils tactiles */
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="text-3xl font-bold mb-6 text-white tracking-widest">JEU DU SERPENT</h1>
+
+        <!-- Canvas du jeu -->
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+
+        <!-- Zone d'informations et de boutons -->
+        <div class="info mt-4 w-full max-w-xs flex justify-between items-center px-2">
+            <span class="text-xl font-medium text-white">
+                Score: <span id="score" class="text-yellow-400 font-extrabold">0</span>
+            </span>
+            <button id="restartBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
+                Recommencer
+            </button>
+        </div>
+
+        <!-- Écran de fin de partie (caché par défaut) -->
+        <div id="gameOver" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 hidden">
+            <div class="text-center bg-gray-800 p-8 rounded-xl shadow-2xl">
+                <p class="text-4xl font-extrabold text-red-500 mb-4">FIN DE PARTIE!</p>
+                <p class="text-xl text-white mb-6">Score final : <span id="finalScore" class="text-yellow-400 font-extrabold">0</span></p>
+                <button id="playAgainBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-150 ease-in-out">
+                    Rejouer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration de base
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        const gameOverScreen = document.getElementById('gameOver');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const restartBtn = document.getElementById('restartBtn');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+
+        const gridSize = 20; // Taille de chaque cellule (20x20 pixels)
+        const tileCount = canvas.width / gridSize;
+        const gameSpeed = 100; // Vitesse du jeu en millisecondes (100ms)
+
+        let snake;
+        let food;
+        let score;
+        let velocityX;
+        let velocityY;
+        let intervalId;
+        let isDead;
+        
+        // Variables pour la détection tactile
+        let lastTouchX = null;
+        let lastTouchY = null;
+
+        // Fonction pour initialiser ou réinitialiser le jeu
+        function initializeGame() {
+            // Position de départ du serpent
+            snake = [{ x: 10, y: 10 }];
+            score = 0;
+            scoreDisplay.textContent = score;
+            // Direction initiale : arrêtée
+            velocityX = 0;
+            velocityY = 0;
+            isDead = false;
+            
+            gameOverScreen.classList.add('hidden');
+            placeFood();
+            
+            // Démarrage de la boucle de jeu
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+            intervalId = setInterval(gameLoop, gameSpeed);
+        }
+
+        // Place la nourriture
+        function placeFood() {
+            let placed = false;
+            while (!placed) {
+                // Position aléatoire sur la grille
+                food = {
+                    x: Math.floor(Math.random() * tileCount),
+                    y: Math.floor(Math.random() * tileCount)
+                };
+
+                // Vérifie si la nourriture n'est pas sur le serpent
+                let overlap = false;
+                for (let part of snake) {
+                    if (part.x === food.x && part.y === food.y) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                if (!overlap) {
+                    placed = true;
+                }
+            }
+        }
+
+        // Boucle principale du jeu
+        function gameLoop() {
+            if (isDead) {
+                return;
+            }
+
+            // 1. Mettre à jour la position de la tête
+            const head = { x: snake[0].x + velocityX, y: snake[0].y + velocityY };
+
+            // 2. Vérifier la collision (murs ou corps)
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                endGame(); // Collision mur
+                return;
+            }
+
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    endGame(); // Collision corps
+                    return;
+                }
+            }
+
+            // Si le serpent n'est pas immobile, ajoute la nouvelle tête
+            if (velocityX !== 0 || velocityY !== 0) {
+                snake.unshift(head);
+            }
+
+            // 3. Manger la nourriture
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                scoreDisplay.textContent = score;
+                placeFood(); 
+                // Le serpent grandit (la queue n'est pas enlevée)
+            } else {
+                // Le serpent bouge (enlève la queue)
+                if (velocityX !== 0 || velocityY !== 0) {
+                    snake.pop();
+                }
+            }
+
+            // 4. Dessiner
+            drawGame();
+        }
+
+        // Fonction de dessin
+        function drawGame() {
+            // Effacer l'écran
+            ctx.fillStyle = '#222';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Dessiner le serpent
+            ctx.fillStyle = '#4ade80'; // Vert pomme pour le corps
+            for (let i = 0; i < snake.length; i++) {
+                // Dessiner la tête en jaune
+                if (i === 0) {
+                    ctx.fillStyle = '#facc15'; 
+                } else {
+                    ctx.fillStyle = '#4ade80';
+                }
+                ctx.fillRect(snake[i].x * gridSize, snake[i].y * gridSize, gridSize - 1, gridSize - 1);
+            }
+
+            // Dessiner la nourriture
+            ctx.fillStyle = '#ef4444'; // Rouge
+            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 1, gridSize - 1);
+        }
+
+        // Fin de la partie
+        function endGame() {
+            isDead = true;
+            clearInterval(intervalId);
+            finalScoreDisplay.textContent = score;
+            // Afficher l'écran de fin de partie
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        // Gestion des entrées clavier
+        function changeDirection(event) {
+            if (isDead) return;
+            // Empêche de faire demi-tour instantanément
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    if (velocityY === 1) break;
+                    velocityX = 0;
+                    velocityY = -1;
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    if (velocityY === -1) break;
+                    velocityX = 0;
+                    velocityY = 1;
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    if (velocityX === 1) break;
+                    velocityX = -1;
+                    velocityY = 0;
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    if (velocityX === -1) break;
+                    velocityX = 1;
+                    velocityY = 0;
+                    break;
+            }
+        }
+        
+        // --- Gestion des entrées tactiles (Mobile) ---
+
+        // Démarrage du toucher (stocke la position initiale)
+        canvas.addEventListener('touchstart', (event) => {
+            event.preventDefault(); // Empêche le défilement
+            lastTouchX = event.touches[0].clientX;
+            lastTouchY = event.touches[0].clientY;
+        }, { passive: false });
+
+        // Fin du toucher (détermine la direction du swipe)
+        canvas.addEventListener('touchend', (event) => {
+            if (isDead || lastTouchX === null || lastTouchY === null) {
+                return;
+            }
+
+            const currentTouchX = event.changedTouches[0].clientX;
+            const currentTouchY = event.changedTouches[0].clientY;
+
+            const deltaX = currentTouchX - lastTouchX;
+            const deltaY = currentTouchY - lastTouchY;
+
+            const minSwipeDistance = 15;
+
+            if (Math.abs(deltaX) > minSwipeDistance || Math.abs(deltaY) > minSwipeDistance) {
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // Swipe Horizontal
+                    if (deltaX > 0) { // Droite
+                        if (velocityX === -1) return;
+                        velocityX = 1;
+                        velocityY = 0;
+                    } else { // Gauche
+                        if (velocityX === 1) return;
+                        velocityX = -1;
+                        velocityY = 0;
+                    }
+                } else {
+                    // Swipe Vertical
+                    if (deltaY > 0) { // Bas
+                        if (velocityY === -1) return;
+                        velocityX = 0;
+                        velocityY = 1;
+                    } else { // Haut
+                        if (velocityY === 1) return;
+                        velocityX = 0;
+                        velocityY = -1;
+                    }
+                }
+            }
+
+            // Réinitialiser les positions tactiles
+            lastTouchX = null;
+            lastTouchY = null;
+        });
+
+        // Écouteurs d'événements pour les boutons et le clavier
+        document.addEventListener('keydown', changeDirection);
+        restartBtn.addEventListener('click', initializeGame);
+        playAgainBtn.addEventListener('click', initializeGame);
+
+        // Lancement du jeu au chargement
+        window.onload = initializeGame;
+
+    </script>
+</body>
+</html>
+</html>
